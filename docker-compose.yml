@@ -1,0 +1,30 @@
+version: '3'
+services:
+  db:
+    image: 'postgres:13.7'
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+ 
+  web:
+    build: .
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+     - .:/jenkact
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV: test
+    depends_on:
+      - db
+
+  redis:
+    image: redis
+    ports:
+      - "6379"
+
+volumes:
+    db_data:
