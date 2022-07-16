@@ -26,8 +26,12 @@ RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
 
-USER root		
+USER root	
+RUN useradd -ms /bin/bash jenkins
 RUN   usermod -aG docker jenkins
+
+USER jenkins
+WORKDIR /var/lib/jenkins
 
 USER docker
 
