@@ -41,7 +41,7 @@ WORKDIR /var/lib/jenkins
 
 VOLUME /var/lib/jenkins
 
-USER jenkins
+USER root
 RUN chmod +w /*
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
