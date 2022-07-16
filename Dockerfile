@@ -12,8 +12,8 @@ RUN curl -sSL https://get.rvm.io | bash -s
 
 SHELL [ "/bin/bash", "-l", "-c" ]
 RUN rvm requirements
-RUN rvm install ${RVM_RUBY_VERSIONS} \
-  && rvm use ${RVM_RUBY_VERSIONS} --default
+RUN rvm install ${RVM_VERSIONS} \
+  && rvm use ${RVM_VERSIONS} --default
 CMD source /etc/profile.d/rvm.sh \
   && source ~/.rvm/scripts/rvm
 ENV PATH $PATH:/usr/local/rvm/bin
