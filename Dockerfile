@@ -1,4 +1,4 @@
-FROM ruby:3.1.0
+FROM ruby:3.1.0-bullseye
 
 ENV PROJECTDIR /jenkact
 
@@ -13,4 +13,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["/bin/bash", "start"]
+CMD ["/bin/bash", "-c -l"]
