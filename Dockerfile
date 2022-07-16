@@ -40,4 +40,8 @@ WORKDIR /var/lib/jenkins
 
 VOLUME /var/lib/jenkins
 
+
+RUN chown -R jenkins:jenkins /* && \
+  chmod +w /*
+
 CMD ["rails", "server", "-b", "0.0.0.0"]
