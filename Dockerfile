@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
   zlib1g-dev \
   && rm -rf /var/cache/apk/*
 
-RUN	groupadd -r -g 1000 docker && \
-		useradd -r --create-home -u 1000 -g docker docker
+RUN	groupadd -r -g 1000 jenkins && \
+		useradd -r --create-home -u 1000 -g jenkins jenkins
 
 COPY Gemfile /jenkact/Gemfile
 COPY Gemfile.lock /jenkact/Gemfile.lock
@@ -26,19 +26,17 @@ RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
 
-USER root	
-RUN useradd -ms /bin/bash jenkins
-RUN   usermod -aG docker jenkins
-
 
 USER docker
 
 RUN gem install bundler && \
                 bundle install
 
-COPY --chown=docker:docker . /jenkact
+COPY --chown=jenkins:jenkins . /jenkact
 
 WORKDIR /jenkact
+
+WORKDIR /var/lib/jenkins
 
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
