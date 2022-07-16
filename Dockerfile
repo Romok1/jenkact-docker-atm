@@ -12,8 +12,6 @@ RUN apt-get update && apt-get install -y \
 
 RUN	groupadd -r -g 1000 docker && \
 		useradd -r --create-home -u 1000 -g docker docker
-		
-RUN    sudo usermod -aG docker jenkins
 
 COPY Gemfile /jenkact/Gemfile
 COPY Gemfile.lock /jenkact/Gemfile.lock
@@ -27,6 +25,9 @@ COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
+
+USER root		
+RUN   usermod -aG docker jenkins
 
 USER docker
 
