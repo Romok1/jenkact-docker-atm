@@ -1,15 +1,16 @@
-FROM node:latest
+FROM ruby:latest
 
 ENV PROJECTDIR /jenkact
 
 WORKDIR $PROJECTDIR
 
-COPY package*.json ./
+COPY Gemfile ./
+COPY Gemfile.lock ./
 
-RUN npm install
+RUN bundle install
 
 COPY . .
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["/bin/bash", "start"]
