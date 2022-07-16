@@ -30,8 +30,6 @@ USER root
 RUN useradd -ms /bin/bash jenkins
 RUN   usermod -aG docker jenkins
 
-USER jenkins
-WORKDIR /var/lib/jenkins
 
 USER docker
 
@@ -41,5 +39,6 @@ RUN gem install bundler && \
 COPY --chown=docker:docker . /jenkact
 
 WORKDIR /jenkact
+
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
