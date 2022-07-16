@@ -18,7 +18,7 @@ COPY Gemfile.lock /jenkact/Gemfile.lock
 
 WORKDIR /jenkact
 
-RUN chown -R docker:docker /jenkact/ && \
+RUN chown -R jenkins:jenkins /jenkact/ && \
   chmod +w /jenkact/Gemfile.lock
 
 COPY entrypoint.sh /usr/bin/
@@ -27,7 +27,7 @@ ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
 
 
-USER docker
+USER jenkins
 
 RUN gem install bundler && \
                 bundle install
