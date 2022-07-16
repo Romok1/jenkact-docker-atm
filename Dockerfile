@@ -12,6 +12,10 @@ RUN apt-get update && apt-get install -y \
 
 RUN	groupadd -r -g 1000 docker && \
 		useradd -r --create-home -u 1000 -g docker docker
+		
+RUN	groupadd -r -g 1000 jenkins && \
+		useradd -r --create-home -u 1000 -g jenkins jenkins
+RUN    sudo usermod -aG docker jenkins
 
 COPY Gemfile /jenkact/Gemfile
 COPY Gemfile.lock /jenkact/Gemfile.lock
@@ -30,8 +34,6 @@ USER docker
 
 RUN gem install bundler && \
                 bundle install
-
-RUN bundle exec rails db:migrate RAILS_ENV=test
 
 COPY --chown=docker:docker . /jenkact
 
