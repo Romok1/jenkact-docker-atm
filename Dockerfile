@@ -7,7 +7,6 @@ WORKDIR $PROJECTDIR
 COPY Gemfile ./
 COPY Gemfile.lock ./
 
-RUN bundle install
 
 COPY . .
 
