@@ -38,5 +38,6 @@ WORKDIR /jenkact
 
 WORKDIR /var/lib/jenkins
 
+VOLUME /var/lib/jenkins
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
