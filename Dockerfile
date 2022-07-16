@@ -8,7 +8,6 @@ RUN apt-get update -q && \
 ARG RVM_VERSION=3.1.0
 ENV RVM_VERSION=${RVM_VERSION}
 
-RUN gpg2 --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
 RUN curl -sSL https://get.rvm.io | bash -s
 
 SHELL [ "/bin/bash", "-l", "-c" ]
