@@ -10,8 +10,12 @@ RUN apt-get update -q && \
     
 # RVM version to install
 ARG RVM_VERSION=3.1.0
-ENV RVM_VERSION=${RVM_VERSION}
+ARG BUNDLER_VERSION=2.3.16
 
+ENV RVM_VERSION=${RVM_VERSION}
+ENV BUNDLER_VERSION=${BUNDLER_VERSION}
+
+RUN gem install bundler -v ${BUNDLER_VERSION}
 RUN curl -sSL https://get.rvm.io | bash -s
 
 SHELL [ "/bin/bash", "-l", "-c" ]
@@ -35,4 +39,6 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["/bin/bash", "-c -l"]
+ENTRYPOINT ["/bin/bash --login"]
+
+CMD ["/bin/bash", "-c, -l", "bundle", "exec"]
