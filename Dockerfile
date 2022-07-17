@@ -26,9 +26,6 @@ RUN rvm install ${RVM_VERSION} \
   && rvm use ${RVM_VERSION} --default
 CMD source /etc/profile.d/rvm.sh
 CMD source ~/.rvm/scripts/rvm
-RUN gem install rails --version 7.0.3 --no-ri --no-rdoc
-
-
 
 ENV PATH $PATH:/usr/local/rvm/bin
 
@@ -40,6 +37,7 @@ WORKDIR $PROJECTDIR
 COPY Gemfile ./
 COPY Gemfile.lock ./
 
+RUN bundle install
 
 COPY . .
 
