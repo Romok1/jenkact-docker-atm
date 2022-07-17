@@ -24,9 +24,12 @@ SHELL [ "/bin/bash", "-l", "-c" ]
 RUN rvm requirements
 RUN rvm install ${RVM_VERSION} \
   && rvm use ${RVM_VERSION} --default
-CMD source /etc/profile.d/rvm.sh \
-  && source ~/.rvm/scripts/rvm
-  
+CMD source /etc/profile.d/rvm.sh
+CMD source ~/.rvm/scripts/rvm
+RUN gem install rails --version 7.0.3 --no-ri --no-rdoc
+
+
+
 ENV PATH $PATH:/usr/local/rvm/bin
 
 # Existing
@@ -42,4 +45,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["/bin/bash", "-c, -l", "bundle", "exec", "rails", "--login", "rvm use"]
+CMD ["/bin/bash", "-c, -l", "bundle", "exec", "rails" ]
