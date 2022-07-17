@@ -42,4 +42,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD ["/bin/bash", "-c -l", "bundle", "exec", "rails", "/bin/bash", "--login"]
+CMD ["/bin/bash", "-c -l", "bundle", "exec", "rails", "--login"]
