@@ -29,6 +29,9 @@ CMD source ~/.rvm/scripts/rvm
 
 ENV PATH $PATH:/usr/local/rvm/bin
 
+ENV GEM_HOME="/usr/local/bundle"
+ENV PATH $GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH
+
 # Existing
 ENV PROJECTDIR /jenkact
 
