@@ -18,12 +18,15 @@ ENV BUNDLER_VERSION=${BUNDLER_VERSION}
 RUN gem install bundler -v ${BUNDLER_VERSION}
 RUN curl -sSL https://get.rvm.io | bash -s
 
+ENV PATH /usr/local/rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
 SHELL [ "/bin/bash", "-l", "-c" ]
 RUN rvm requirements
 RUN rvm install ${RVM_VERSION} \
   && rvm use ${RVM_VERSION} --default
 CMD source /etc/profile.d/rvm.sh \
   && source ~/.rvm/scripts/rvm
+  
 ENV PATH $PATH:/usr/local/rvm/bin
 
 # Existing
@@ -39,6 +42,4 @@ COPY . .
 
 EXPOSE 3000
 
-ENTRYPOINT ["/bin/bash --login"]
-
-CMD ["/bin/bash", "-c, -l", "bundle", "exec"]
+CMD ["/bin/bash", "-c -l", "bundle", "exec", "/bin/bash", "--login"]
