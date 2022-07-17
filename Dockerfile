@@ -37,6 +37,8 @@ WORKDIR $PROJECTDIR
 COPY Gemfile ./
 COPY Gemfile.lock ./
 
+RUN gem install rails bundler
+RUN gem install rake
 RUN bundle install
 
 COPY . .
