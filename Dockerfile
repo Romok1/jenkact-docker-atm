@@ -1,6 +1,10 @@
 FROM ruby:3.1.0-bullseye
 
 # New
+
+# Postgres related
+RUN apt-get update && apt-get install -qq -y --no-install-recommends build-essential postgresql postgresql-contrib libpq-dev libsqlite3-dev curl imagemagick nodejs yarn postgresql-client
+
 RUN apt-get update -q && \
     apt-get install -qy procps curl ca-certificates gnupg2 build-essential --no-install-recommends && apt-get clean
     
