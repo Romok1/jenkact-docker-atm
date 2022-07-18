@@ -41,8 +41,6 @@ COPY . .
 WORKDIR /jenkact
 # Copy artifacts and tests
 
-COPY --from=prepare Gemfile /jenkact/
-COPY --from=prepare Gemfile.lock /jenkact/Gemfile.lock
 RUN bundle exec rake db:migrate
 
 
