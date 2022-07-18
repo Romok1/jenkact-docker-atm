@@ -9,5 +9,14 @@ RUN apt-get update && apt-get install -y \
   libxslt-dev \
   zlib1g-dev \
   && rm -rf /var/cache/apk/*
+  
+ARG USER_ID=1000
+ARG GROUP_ID=1000
 
+RUN groupadd -g ${GROUP_ID} jenkins &&\
+    useradd -l -u ${USER_ID} -g jenkins jenkins 
+
+CMD until nc -z postgres 5432; do echo "Waiting for Postgres..." && sleep 1; done \
+    && psql --username=jenkins --host=postgres --list
+    
 CMD ["rails", "server", "-b", "0.0.0.0"]
