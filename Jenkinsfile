@@ -20,7 +20,8 @@ pipeline {
         }
 	 stage("Fix the permission issue") {
             steps {
-                sh "sudo chown root:jenkins /run/docker.sock"
+		    sh 'psql --host localhost -U postgres'
+                sh "chown jenkins:jenkins ./jenkack"
             }
 
         }
