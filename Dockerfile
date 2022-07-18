@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
   zlib1g-dev \
   && rm -rf /var/cache/apk/*
 
-RUN	groupadd -r -g 1000 docker && \
-		useradd -r --create-home -u 1000 -g jenkins docker
+RUN	groupadd -r -g 1000 jenkins && \
+		useradd -r --create-home -u 1000 -g jenkins jenkins
 
 COPY Gemfile /jenkact/Gemfile
 COPY Gemfile.lock /jenkact/Gemfile.lock
