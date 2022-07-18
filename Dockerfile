@@ -11,14 +11,14 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/cache/apk/*
 
 RUN	groupadd -r -g 1000 docker && \
-		useradd -r --create-home -u 1000 -g docker docker
+		useradd -r --create-home -u 1000 -g jenkins docker
 
 COPY Gemfile /jenkact/Gemfile
 COPY Gemfile.lock /jenkact/Gemfile.lock
 
 WORKDIR /jenkact
 
-RUN chown -R docker:docker /jenkact/ && \
+RUN chown -R jenkins:jenkins /jenkact/ && \
   chmod +w /jenkact/Gemfile.lock
 
 COPY entrypoint.sh /usr/bin/
@@ -26,7 +26,7 @@ RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
 
-USER docker
+USER jenkins
 
 ENV BUNDLE_PATH=/jenkact/vendor/bundle
 
@@ -35,7 +35,7 @@ RUN gem install bundler && \
 
 RUN bundle exec rails db:migrate RAILS_ENV=test
 
-COPY --chown=docker:docker . /jenkact
+COPY --chown=jenkins:jenkins . /jenkact
 
 WORKDIR /jenkact
 
