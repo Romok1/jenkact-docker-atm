@@ -26,7 +26,7 @@ pipeline {
                  }
             steps {
                 sh 'ls -lrth'
-		sh 'cd jenkact && pwd && ls & bundle exec rails db:create'
+		sh 'pwd && ls && bundle install && bundle exec rake db:create'
             }
         }
 	 stage('DB-aux') {
