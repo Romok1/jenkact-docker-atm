@@ -34,7 +34,7 @@ pipeline {
                 echo 'Testing..'
 		    sh 'pwd'
                 withEnv(['POSTGRES_USERNAME=postgres', 'POSTGRES_PASSWPRD=postgres']) {
-                sh 'cd /jenkact && bundle install && ls && bundle exec rake db:migrate db:create'}
+                sh 'bundle install && ls && bundle exec rake db:migrate db:create'}
             }
         }
     }
