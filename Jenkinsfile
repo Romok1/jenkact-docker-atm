@@ -4,7 +4,7 @@ pipeline {
 	dockerfile {
 	   filename 'Dockerfile'
         additionalBuildArgs  '--build-arg version=1.0.2'
-        args '-u root:root'
+        args '-u postgres:postgres'
 	  }
 	}
     stages {
