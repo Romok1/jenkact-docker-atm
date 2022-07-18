@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN	groupadd -r -g 1000 jenkins && \
 		useradd -r --create-home -u 1000 -g jenkins jenkins
+USER jenkins
 
 EXPOSE 3000
 
