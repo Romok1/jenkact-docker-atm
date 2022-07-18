@@ -4,7 +4,7 @@ pipeline {
 	dockerfile {
 	   filename 'Dockerfile'
         additionalBuildArgs  '--build-arg version=1.0.2'
-        args '-u 1000:1000'
+        args '-u root:root'
 	  }
 	}
     stages {
@@ -17,6 +17,12 @@ pipeline {
                 sh 'ls'
                 sh 'printenv'
             }
+        }
+	 stage("Fix the permission issue") {
+            steps {
+                sh "sudo chown root:jenkins /run/docker.sock"
+            }
+
         }
         stage('Clone Sources') {
            when {
