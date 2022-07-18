@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
   zlib1g-dev \
   && rm -rf /var/cache/apk/*
 
+RUN	groupadd -r -g 1000 jenkins && \
+		useradd -r --create-home -u 1000 -g jenkins jenkins
 
 EXPOSE 3000
 
