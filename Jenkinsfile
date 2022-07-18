@@ -32,6 +32,8 @@ pipeline {
 	stage('DB') {
             steps {
                 echo 'Testing..'
+		    sh 'pwd'
+		    sh 'cd /jenkact'
                 withEnv(['POSTGRES_USERNAME=postgres', 'POSTGRES_PASSWPRD=postgres']) {
                 sh 'bundle exec rake db:migrate db:create'}
             }
