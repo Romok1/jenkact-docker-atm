@@ -41,4 +41,6 @@ RUN chmod +w /jenkact
 
 WORKDIR /jenkact
 
+RUN touch Gemfile.lock && chown jenkins:jenkins /jenkack/Gemfile.lock
+
 CMD ["rails", "server", "-b", "0.0.0.0"]
