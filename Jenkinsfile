@@ -18,8 +18,14 @@ pipeline {
          steps {
            sh 'printenv'
            sh 'bundle install'
-           sh 'bundle exec rake db:migrate db:create'
           }
+        }
+	stage('DB') {
+            steps {
+                echo 'Testing..'
+                withEnv(['POSTGRES_USERNAME=postgres', 'POSTGRES_PASSWPRD=postgres']) {
+                sh 'bundle exec rake db:migrate db:create'}
+            }
         }
     }
 
