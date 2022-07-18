@@ -27,7 +27,8 @@ pipeline {
 		sh "sed -i 's/peer/trust/g' /etc/postgresql/13/main/pg_hba.conf"
                     sh '/etc/init.d/postgresql start'
 			    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
-			    sh 'psql -U postgres && \du'
+			    sh 'psql -U postgres'
+			    sh '\du'
 			    sh "psql -U postgres -c 'createuser root & createdb ruby /bin/bash'" }
             }
 
