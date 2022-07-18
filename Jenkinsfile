@@ -24,10 +24,11 @@ pipeline {
 		    sh 'ps aux'
 		    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
 			    echo "1"
-		   sh '"sed -i 's/\S*$/trust/' /etc/postgresql/13/main/pg_hba.conf"'
+		   sh "sed -i 's/\S*$/trust/' /etc/postgresql/13/main/pg_hba.conf"
 		    def RTY = sh (script: 'sed -i 's/\S*$/trust/' /etc/postgresql/13/main/pg_hba.conf')
 			    sh "$RTY"
                     sh '/etc/init.d/postgresql start'
+			    sh 'sudo -u postgres psql'
 			    sh 'psql -h localhost postgres postgres' }
                 sh "chown jenkins:jenkins ./jenkack"
             }
