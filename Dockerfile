@@ -28,6 +28,8 @@ EXPOSE 3000
 
 USER docker
 
+ENV BUNDLE_PATH=/app/vendor/bundle
+
 RUN gem install bundler && \
                 bundle install
 
