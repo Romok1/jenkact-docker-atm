@@ -37,6 +37,8 @@ RUN bundle exec rails db:migrate RAILS_ENV=test
 
 COPY --chown=jenkins:jenkins . /jenkact
 
+RUN chmod +w /jenkact
+
 WORKDIR /jenkact
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
