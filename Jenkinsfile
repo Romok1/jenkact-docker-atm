@@ -30,7 +30,7 @@ pipeline {
 			    sh 'psql -U postgres'
 			    sh 'su - postgres'
 			    
-			    sh "psql -U postgres -c 'CREATE USER romi /bin/bash'" 
+			    sh "psql -U postgres -c 'CREATE USER romi'" 
 		    // sh 'psql -U postgres -c 'CREATE USER romi CREATEDB PASSWORD 'password'''  
 		    }
             }
