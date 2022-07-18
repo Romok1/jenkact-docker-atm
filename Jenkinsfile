@@ -20,7 +20,7 @@ pipeline {
         }
 	 stage("Fix the permission issue") {
             steps {
-		    sh 'psql'
+		    sh 'psql -U postgres'
                 sh "chown jenkins:jenkins ./jenkack"
             }
 
