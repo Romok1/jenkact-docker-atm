@@ -28,7 +28,7 @@ pipeline {
                     sh '/etc/init.d/postgresql start'
 			    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
 			    sh 'psql -U postgres'
-			    sh "postgres -U postgres sh -c 'createuser root & createdb ruby'" }
+			    sh "psql -U postgres sh -c 'createuser root & createdb ruby'" }
             }
 
         }
