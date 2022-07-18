@@ -14,10 +14,14 @@ RUN apt-get update && apt-get install -y \
   
 FROM postgres AS test
 
+COPY . .
+
 WORKDIR /jenkact
 # Copy artifacts and tests
 
-COPY . .
+COPY Gemfile /jenkact/Gemfile
+COPY Gemfile.lock /jenkact/Gemfile.lock
+
 RUN bundle install
 
 RUN	groupadd -r -g 1000 jenkins && \
