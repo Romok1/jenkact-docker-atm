@@ -4,7 +4,7 @@ pipeline {
 	dockerfile {
 	   filename 'Dockerfile'
         additionalBuildArgs  '--build-arg version=1.0.2'
-        args '-u jenkins:jenkins'
+        args '-u root:root'
 	  }
 	}
     stages {
