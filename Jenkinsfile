@@ -21,8 +21,8 @@ pipeline {
 	 stage("Fix the permission issue") {
             steps {
 		    sh 'ps aux'
-		    sh 'cat /etc/postgresql/13/main/postgresql.conf'
 		    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
+		    sh ('sed -i  '/^local all all peer/ s/peer/md5/' /etc/postgresql/13/main/pg_hba.conf')
                     sh 'systemctl start postgresql'
 		    sh 'psql -h 0.0.0.0 postgres postgres'
                 sh "chown jenkins:jenkins ./jenkack"
