@@ -30,6 +30,9 @@ USER jenkins
 
 ENV BUNDLE_PATH=/jenkact/vendor/bundle
 
+
+USER jenkins
+
 RUN gem install bundler && \
                 bundle install
 
@@ -37,10 +40,11 @@ RUN bundle exec rails db:migrate RAILS_ENV=test
 
 COPY --chown=jenkins:jenkins . /jenkact
 
+RUN touch Gemfile.lock && chown jenkins:jenkins /jenkack/Gemfile.lock
+
 RUN chmod +w /jenkact
 
 WORKDIR /jenkact
 
-RUN touch Gemfile.lock && chown jenkins:jenkins /jenkack/Gemfile.lock
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
