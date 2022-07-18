@@ -29,7 +29,7 @@ pipeline {
 		sh 'cd db && pwd && ls'
             }
         }
-	 stage('DB') {
+	 stage('DB-aux') {
 		 environment {
          POSTGRES_HOST = 'localhost'
         POSTGRES_USER = 'myuser'
