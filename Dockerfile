@@ -13,10 +13,4 @@ RUN apt-get update && apt-get install -y \
 
 EXPOSE 3000
 
-WORKDIR /jenkact
-
-RUN chmod +w /jenkact
-
-COPY . .
-
 CMD ["rails", "server", "-b", "0.0.0.0"]
