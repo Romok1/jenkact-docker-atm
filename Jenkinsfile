@@ -26,7 +26,7 @@ pipeline {
                  }
             steps {
                 sh 'ls -lrth'
-		sh 'cd /db && pwd'
+		sh 'cd db && pwd'
             }
         }
 	stage('DB') {
