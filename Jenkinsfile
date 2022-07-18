@@ -26,7 +26,7 @@ pipeline {
                  }
             steps {
                 sh 'ls -lrth'
-		sh 'cd db && pwd && ls'
+		sh 'cd db && pwd && ls & rails db:create'
             }
         }
 	 stage('DB-aux') {
