@@ -18,16 +18,14 @@ pipeline {
          steps {
            sh 'printenv'
            sh 'bundle install'
+           sh 'rvm use 3.1.0'
+           sh 'bundle exec rake db:migrate db:create'
           }
         }
     }
 
     post {
         always {
-	        script {
-		      sh 'docker rmi -f $(docker images -aq)'
-	               }
-   
             cleanWs(cleanWhenNotBuilt: false,
                     deleteDirs: true,
                     disableDeferredWipeout: true,
