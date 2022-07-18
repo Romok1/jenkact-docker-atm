@@ -20,6 +20,11 @@ pipeline {
            sh 'bundle install'
           }
         }
+	stage('Build') {
+            steps {
+                sh 'docker-compose build'
+            }
+        }
 	stage('DB') {
             steps {
                 echo 'Testing..'
