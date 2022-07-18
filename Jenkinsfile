@@ -60,7 +60,7 @@ pipeline {
             steps {
                 sh 'ls -lrth'
 		    withEnv(['POSTGRES_USERNAME=postgres', 'POSTGRES_PASSWPRD=postgres']) {
-			    sh 'pwd && ls && ls -al && bundle install && bundle exec rake db:create' }
+			    sh 'pwd && ls && ls -al && bundle install && bundle exec rake db:create db:migrate RAILS_ENV=test' }
             }
         }
 	 stage('DB-aux') {
