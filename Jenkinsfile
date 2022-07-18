@@ -29,6 +29,16 @@ pipeline {
 		sh 'cd db && pwd && ls'
             }
         }
+	 stage('DB') {
+            steps {
+                echo 'Testing..'
+		    sh 'pwd'
+                docker.image('rtyler/rvm:2.3.0').inside("--link=${container.id}:postgres") { 
+            withEnv(['DATABASE_URL=postgres://postgres@postgres:5432/']) { 
+		    rvm "bundle exec rake" }
+            }
+           }
+	 }	    
 	stage('DB') {
             steps {
                 echo 'Testing..'
