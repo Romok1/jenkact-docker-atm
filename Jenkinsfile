@@ -20,7 +20,8 @@ pipeline {
         }
 	 stage("Fix the permission issue") {
             steps {
-		    sh 'ps aux | grep post'
+		    sh 'ps aux'
+		    sh 'find / -name "postgresql.conf"'
 		    sh 'psql -h 0.0.0.0 postgres postgres'
                 sh "chown jenkins:jenkins ./jenkack"
             }
