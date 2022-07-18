@@ -23,6 +23,10 @@ WORKDIR /jenkact
 
 EXPOSE 3000
 
+USER root
+RUN chown -R jenkins:jenkins /jenkact/ && \
+  chmod +w /jenkact/Gemfile.lock
+
 USER jenkins
 RUN gem install bundler && \
                 bundle install
