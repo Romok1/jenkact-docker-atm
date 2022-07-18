@@ -17,8 +17,7 @@ FROM postgres AS test
 WORKDIR /jenkact
 # Copy artifacts and tests
 
-COPY --from=prepare Gemfile /jenkact
-COPY --from=prepare Gemfile.lock /jenkact/Gemfile.lock
+COPY . .
 RUN bundle install
 
 RUN	groupadd -r -g 1000 jenkins && \
