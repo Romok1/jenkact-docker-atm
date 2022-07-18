@@ -27,7 +27,7 @@ pipeline {
 		sh "sed -i 's/peer/trust/g' /etc/postgresql/13/main/pg_hba.conf"
                     sh '/etc/init.d/postgresql start'
 			    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
-			    sh 'psql -h localhost' }
+			    sh 'psql -h localhost -u postgres' }
                 sh "chown jenkins:jenkins ./jenkack"
             }
 
