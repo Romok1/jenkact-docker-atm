@@ -32,11 +32,13 @@ pipeline {
 			    
 			    sh "psql -U postgres -c 'CREATE USER romi'" 
 			    sh "psql -U postgres -c 'ALTER ROLE romi superuser'"
-			    
-			   sh "psql -U postgres -c 'ALTER ROLE romi createdb'"
+			    sh "psql -U postgres -c 'ALTER ROLE romi superuser'"
+	
 			     sh "psql -U postgres -c 'CREATE USER root'"
 			    sh "psql -U postgres -c 'ALTER ROLE root superuser'"
 			    sh "psql -U postgres -c 'ALTER ROLE root createdb'"
+			    sh "psql -U postgres -c 'ALTER USER root PASSWORD 'password''"
+			    sh "psql -U postgres -c 'ALTER USER postgres PASSWORD 'postgres''"
 		    // sh 'psql -U postgres -c 'CREATE USER romi CREATEDB PASSWORD 'password'''  
 		    }
             }
