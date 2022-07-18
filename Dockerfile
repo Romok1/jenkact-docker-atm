@@ -9,6 +9,16 @@ RUN apt-get update && apt-get install -y \
   libxslt-dev \
   zlib1g-dev \
   && rm -rf /var/cache/apk/*
+ 
+RUN	groupadd -r -g 1000 jenkins && \
+		useradd -r --create-home -u 1000 -g jenkins jenkins
+
+USER jenkins
+
+COPY Gemfile /jenkact/Gemfile
+COPY Gemfile.lock /jenkact/Gemfile.lock
+
+RUN bundle install
   
   
   
@@ -19,16 +29,11 @@ COPY . .
 WORKDIR /jenkact
 # Copy artifacts and tests
 
-COPY Gemfile /jenkact/Gemfile
-COPY Gemfile.lock /jenkact/Gemfile.lock
+COPY src /app
+COPY --from=prepare Gemfile /jenkact/
+COPY --from=prepare Gemfile.lock /jenkact/Gemfile.lock
+RUN bundle exec rake db:migrate
 
-RUN bundle install
-
-RUN	groupadd -r -g 1000 jenkins && \
-		useradd -r --create-home -u 1000 -g jenkins jenkins
-		
-RUN chown -R jenkins:jenkins /jenkact/ && \
-  chmod +w /jenkact/Gemfile.lock
 
 USER jenkins
 
