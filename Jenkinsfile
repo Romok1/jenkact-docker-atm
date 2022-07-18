@@ -29,7 +29,9 @@ pipeline {
 			    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
 			    sh 'psql -U postgres'
 			    sh 'su - postgres'
-			    sh "psql -U postgres -c 'createuser root & createdb ruby /bin/bash'" }
+			    
+			    sh "psql -U postgres -c 'CREATE USER root & CREATEDB ruby /bin/bash'" 
+		    sh 'psql -U postgres -c "CREATE USER romi CREATEDB PASSWORD 'password'"'}
             }
 
         }
