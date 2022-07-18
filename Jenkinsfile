@@ -17,7 +17,7 @@ pipeline {
                  }
          steps {
            sh 'printenv'
-           sh 'bundle install'
+           sh 'echo "bundle install"'
           }
         }
 	stage('Build') {
