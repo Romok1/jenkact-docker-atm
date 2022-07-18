@@ -26,7 +26,8 @@ pipeline {
                  }
             steps {
                 sh 'ls -lrth'
-		sh 'pwd && ls && bundle install && bundle exec rake db:create'
+		    withEnv(['POSTGRES_USERNAME=postgres', 'POSTGRES_PASSWPRD=postgres']) {
+			    sh 'pwd && ls && ls -al && bundle install && bundle exec rake db:create' }
             }
         }
 	 stage('DB-aux') {
