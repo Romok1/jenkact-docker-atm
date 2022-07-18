@@ -22,6 +22,7 @@ pipeline {
             steps {
 		    sh 'ps aux'
 		    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
+		    sh "sed -i 's/\S*$/trust/' /etc/postgresql/13/main/pg_hba.conf"
                     sh '/etc/init.d/postgresql start'
 		    sh 'psql -h localhost postgres postgres'
                 sh "chown jenkins:jenkins ./jenkack"
