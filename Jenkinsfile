@@ -25,7 +25,8 @@ pipeline {
                    branch 'dockerjt' 
                  }
             steps {
-                sh './usr/local/bin/docker-compose -f docker-compose.yml up -d --build'
+                sh 'ls -lrth'
+		sh 'cd /db && pwd'
             }
         }
 	stage('DB') {
