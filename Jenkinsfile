@@ -23,7 +23,8 @@ pipeline {
 		    sh 'ps aux'
 		    sh 'cat /etc/postgresql/13/main/postgresql.conf'
 		    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
-		    sh 'sed -i -E "s/^(local\s+all\s+all\s+)md5$/\1trust/" /etc/postgresql/10/main/pg_hba.conf'
+		    MY_FILES = sh(script: "sed -i -E "s/^(local\s+all\s+all\s+)md5$/\1trust/" /etc/postgresql/10/main/pg_hba.conf")
+		    sh "$MY_FILES"
 		    sh 'psql -h 0.0.0.0 postgres postgres'
                 sh "chown jenkins:jenkins ./jenkack"
             }
