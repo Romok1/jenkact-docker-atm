@@ -20,8 +20,6 @@ COPY Gemfile.lock /jenkact/Gemfile.lock
 
 WORKDIR /jenkact
 
-RUN chown -R jenkins:jenkins /jenkact/ && \
-  chmod +w /jenkact/Gemfile.lock
 
 
 COPY entrypoint.sh /usr/bin/
