@@ -19,4 +19,6 @@ RUN groupadd -g ${GROUP_ID} jenkins &&\
 CMD until nc -z postgres 5432; do echo "Waiting for Postgres..." && sleep 1; done \
     && psql --username=jenkins --host=postgres --list
     
+EXPOSE 5432
+
 CMD ["rails", "server", "-b", "0.0.0.0"]
