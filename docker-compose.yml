@@ -2,6 +2,10 @@ version: '3'
 services:
   db:
     image: 'postgres:13.7'
+    environment:
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=
+      - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5432"
  
@@ -15,6 +19,7 @@ services:
     environment:
       - DB_USERNAME=postgres
       - DB_PASSWORD=
+      - DB_HOST=db
     depends_on:
       - db
 
