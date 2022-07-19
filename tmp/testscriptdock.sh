@@ -10,16 +10,17 @@ rm -rf public/uploads/* &> /dev/null || true &> /dev/null
 echo -e "\033[34mBuilding Project - step 2 step 2...\033[0m"
 docker-compose --project-name=${JOB_NAME} build
 
+# Run tests
+COMMAND="bundle exec rspec spec"
+echo -e "\033[34mRunning: $COMMAND\033[0m"
+unbuffer docker-compose --project-name=${JOB_NAME} run web $COMMAND
+
+
 # Prepare test database
 COMMAND="bundle exec rake db:drop db:create db:migrate"
 echo -e "\033[34mRunning - step 3 step 3: $COMMAND\033[0m"
 docker-compose --project-name=${JOB_NAME} run  \
 	-e RAILS_ENV=test web $COMMAND
-
-# Run tests
-COMMAND="bundle exec rspec spec"
-echo -e "\033[34mRunning: $COMMAND\033[0m"
-unbuffer docker-compose --project-name=${JOB_NAME} run web $COMMAND
 
 # Run rubocop lint
 COMMAND="bundle exec rubocop app spec -R --format simple"   
