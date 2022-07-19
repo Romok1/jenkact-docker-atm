@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('build') {
              when {
-                   branch 'dockerjt' 
+                   branch 'wolox-for-multibranch' 
                  }
             steps {
                 sh 'ruby --version'
@@ -18,88 +18,35 @@ pipeline {
                 sh 'printenv'
             }
         }
-	 stage("Fix the permission issue") {
-            steps {
-		    withEnv(['POSTGRES_USERNAME=postgres', 'POSTGRES_PASSWPRD=postgres']) {
-		    sh 'ps aux'
-		    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
-			    echo "1"
-		sh "sed -i 's/peer/trust/g' /etc/postgresql/13/main/pg_hba.conf"
-                    sh '/etc/init.d/postgresql start'
-			    sh 'cat /etc/postgresql/13/main/pg_hba.conf'
-			    sh 'psql -U postgres'
-			    sh 'su - postgres'
-			    
-			    sh "psql -U postgres -c 'CREATE USER romi'" 
-			    sh "psql -U postgres -c 'ALTER ROLE romi superuser'"
-			    sh "psql -U postgres -c 'ALTER ROLE romi superuser'"
-	
-			     sh "psql -U postgres -c 'CREATE USER root'"
-			    sh "psql -U postgres -c 'ALTER ROLE root superuser'"
-			    // sh "psql -U postgres -c 'ALTER ROLE root createdb'"
-			    // sh "psql -U postgres -c 'ALTER USER root WITH PASSWORD 'postgres'';"
-		    // sh 'psql -U postgres -c 'CREATE USER romi CREATEDB PASSWORD 'password'''  
-		    }
-            }
-
-        }
-        stage('Clone Sources') {
-           when {
-                   branch 'dockerjt' 
-                 }
-         steps {
-           sh 'printenv'
-           sh 'echo "bundle install"'
-          }
-        }
-	stage('Build') {
-	      when {
-                   branch 'dockerjt' 
+	 stage("run script") {
+	     when {
+                   branch 'wolox-for-multibranch' 
                  }
             steps {
-                sh 'ls -lrth'
-		    withEnv(['POSTGRES_USERNAME=postgres', 'POSTGRES_PASSWPRD=postgres']) {
-			    sh 'pwd && ls && ls -al && bundle install && bundle exec rake db:create db:migrate RAILS_ENV=test' }
+		script {
+		sh '''#/bin/bash -l
+		    chmod +x /tmp/testscriptdock.sh
+                    ./tmp/testscriptdock.sh 
+		    '''
+		}	    
             }
         }
-	 stage('DB-aux') {
-		 environment {
-         POSTGRES_HOST = 'localhost'
-        POSTGRES_USER = 'myuser'
-          }
-
-           steps {
-            script {
-		    echo 'Testing..'
-		    sh 'pwd'
-            docker.image('postgres:9.6').withRun(
-                "-h ${env.POSTGRES_HOST} -e POSTGRES_USER=${env.POSTGRES_USER}"
-            ) { db ->
-                  // You can your image here but you need psql to be installed inside
-                docker.image('ruby').inside("--link ${db.id}:db") {
-                  sh '''
-                  psql --version
-                  until psql -h ${POSTGRES_HOST} -U ${POSTGRES_USER} -c "select 1" > /dev/null 2>&1 || [ $RETRIES -eq 0 ]; do
-                  echo "Waiting for postgres server, $((RETRIES-=1)) remaining attempts..."
-                  sleep 1
-                       done
-                    '''
-                  sh 'echo "your commands here"'
-                }
-              }
-            }
-           }
-	 }	    
-	stage('DB') {
+	 stage("run script") {
+	     when {
+                   branch 'wolox-for-multibranch' 
+                 }
             steps {
-                echo 'Testing..'
-		    sh 'pwd'
-                withEnv(['POSTGRES_USERNAME=postgres', 'POSTGRES_PASSWPRD=postgres']) {
-                sh 'bundle install && ls && bundle exec rake db:migrate db:create'}
-            }
+		script {
+		sh '''#/bin/bash -l
+		    chmod +x /tmp/testscriptdockRM.sh
+                    ./tmp/testscriptdockRM.sh 
+		    '''
+		}	    
+	    }
         }
     }
 
+	
     post {
         always {
             cleanWs(cleanWhenNotBuilt: false,
