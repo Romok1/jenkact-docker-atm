@@ -28,6 +28,9 @@ EXPOSE 3000
 
 USER docker
 
+ENV BUNDLE_PATH=/jenkact/vendor/bundle
+
+USER docker
 RUN gem install bundler && \
                 bundle install
 
