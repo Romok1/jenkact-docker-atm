@@ -31,7 +31,7 @@ pipeline {
 		}	    
             }
         }
-	 stage("run script") {
+	 stage("remove images") {
 	     when {
                    branch 'wolox-for-multibranch' 
                  }
