@@ -7,9 +7,7 @@ pipeline {
                    branch 'wolox-for-multibranch' 
                  }
             steps {
-                sh 'ruby --version'
-                sh 'ls'
-                sh 'printenv'
+                sh 'echo "yes"'
             }
         }
 	 stage("run script") {
