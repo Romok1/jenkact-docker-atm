@@ -10,17 +10,32 @@ RUN apt-get update && apt-get install -y \
   zlib1g-dev \
   && rm -rf /var/cache/apk/*
 
+RUN	groupadd -r -g 1000 jenkins && \
+		useradd -r --create-home -u 1000 -g jenkins jenkins
 
-RUN gem install bundler
-RUN mkdir /jenkact
-WORKDIR /jenkact
+USER jenkins
 
 COPY Gemfile /jenkact/Gemfile
 COPY Gemfile.lock /jenkact/Gemfile.lock
-RUN bundle install
 
+WORKDIR /jenkact
+
+RUN chown -R jenkins:jenkins /jenkact/ && \
+  chmod +w /jenkact/Gemfile.lock
+
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
 
-COPY . .
+USER jenkins
+
+RUN gem install bundler && \
+                bundle install
+
+
+COPY --chown=jenkins:jenkins . /jenkact
+
+WORKDIR /jenkact
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
