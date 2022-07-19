@@ -1,51 +1,40 @@
 FROM ruby:3.1.0-bullseye
 
-# New
+RUN apt-get update && apt-get install -qq -y --no-install-recommends build-essential postgresql postgresql-contrib libpq-dev libsqlite3-dev curl imagemagick nodejs
 
-# Postgres related
-RUN apt-get update && apt-get install -qq -y --no-install-recommends build-essential postgresql postgresql-contrib libpq-dev libsqlite3-dev curl imagemagick nodejs yarn postgresql-client
+RUN apt-get update && apt-get install -y nodejs yarn postgresql-client
 
-RUN apt-get update -q && \
-    apt-get install -qy procps curl ca-certificates gnupg2 build-essential --no-install-recommends && apt-get clean
-    
-# RVM version to install
-ARG RVM_VERSION=3.1.0
-ARG BUNDLER_VERSION=2.3.16
+RUN apt-get update && apt-get install -y \
+  libxml2-dev \
+  libxslt-dev \
+  zlib1g-dev \
+  && rm -rf /var/cache/apk/*
 
-ENV RVM_VERSION=${RVM_VERSION}
-ENV BUNDLER_VERSION=${BUNDLER_VERSION}
+RUN	groupadd -r -g 1000 docker && \
+		useradd -r --create-home -u 1000 -g docker docker
 
-RUN gem install bundler -v ${BUNDLER_VERSION}
-RUN curl -sSL https://get.rvm.io | bash -s
+COPY Gemfile /jenkact/Gemfile
+COPY Gemfile.lock /jenkact/Gemfile.lock
 
-ENV PATH /usr/local/rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+WORKDIR /jenkact
 
-SHELL [ "/bin/bash", "-l", "-c" ]
-RUN rvm requirements
-RUN rvm install ${RVM_VERSION} \
-  && rvm use ${RVM_VERSION} --default
-CMD source /etc/profile.d/rvm.sh
-CMD source ~/.rvm/scripts/rvm
+RUN chown -R docker:docker /jenkact/ && \
+  chmod +w /jenkact/Gemfile.lock
 
-ENV PATH $PATH:/usr/local/rvm/bin
-
-ENV GEM_HOME="/usr/local/bundle"
-ENV PATH $GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH
-
-# Existing
-ENV PROJECTDIR /jenkact
-
-WORKDIR $PROJECTDIR
-
-COPY Gemfile ./
-COPY Gemfile.lock ./
-
-RUN gem install rails bundler
-RUN gem install rake
-RUN bundle install
-
-COPY . .
-
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
 
-CMD ["/bin/bash", "-c, -l", "bundle", "exec", "rails" ]
+USER docker
+
+RUN gem install bundler && \
+                bundle install
+
+RUN bundle exec rails db:migrate RAILS_ENV=test
+
+COPY --chown=docker:docker . /jenkact
+
+WORKDIR /jenkact
+
+CMD ["rails", "server", "-b", "0.0.0.0"]
