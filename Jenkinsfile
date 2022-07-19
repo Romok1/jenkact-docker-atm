@@ -25,6 +25,8 @@ pipeline {
             steps {
 		script {
 		sh '''#/bin/bash -l
+		     cd /tmp
+		     ls
 		    chmod +x /tmp/testscriptdock.sh
                     ./tmp/testscriptdock.sh 
 		    '''
@@ -38,6 +40,8 @@ pipeline {
             steps {
 		script {
 		sh '''#/bin/bash -l
+		     cd /tmp
+		     ls
 		    chmod +x /tmp/testscriptdockRM.sh
                     ./tmp/testscriptdockRM.sh 
 		    '''
