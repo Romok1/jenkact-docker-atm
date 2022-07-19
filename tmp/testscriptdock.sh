@@ -13,7 +13,7 @@ docker-compose --project-name=${JOB_NAME} build
 # Run tests
 COMMAND="bundle exec rspec spec"
 echo -e "\033[34mRunning: $COMMAND\033[0m"
-unbuffer docker-compose --project-name=${JOB_NAME} run web $COMMAND
+docker-compose --project-name=${JOB_NAME} run web $COMMAND
 
 
 # Prepare test database
