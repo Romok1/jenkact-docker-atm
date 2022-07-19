@@ -1,12 +1,6 @@
 pipeline {
     // agent { dockerfile true
-	agent {
-	dockerfile {
-	   filename 'Dockerfile'
-        additionalBuildArgs  '--build-arg version=1.0.2'
-        args '-u root:root'
-	  }
-	}
+	agent any
     stages {
         stage('build') {
              when {
