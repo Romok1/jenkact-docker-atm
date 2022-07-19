@@ -25,10 +25,10 @@ pipeline {
             steps {
 		script {
 		sh '''#/bin/bash -l
-		     cd /tmp
+		     cd tmp
 		     ls
-		    chmod +x /tmp/testscriptdock.sh
-                    ./tmp/testscriptdock.sh 
+		    chmod +x testscriptdock.sh
+                    ./testscriptdock.sh 
 		    '''
 		}	    
             }
@@ -40,10 +40,10 @@ pipeline {
             steps {
 		script {
 		sh '''#/bin/bash -l
-		     cd /tmp
+		     cd tmp
 		     ls
-		    chmod +x /tmp/testscriptdockRM.sh
-                    ./tmp/testscriptdockRM.sh 
+		    chmod +x testscriptdockRM.sh
+                    ./testscriptdockRM.sh 
 		    '''
 		}	    
 	    }
