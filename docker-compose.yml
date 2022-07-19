@@ -2,6 +2,8 @@ db:
   image: postgres
   ports:
     - "5432"
+  volumes:
+      - db_data:/var/lib/postgresql/data
  
 redis:
   image: redis
@@ -20,3 +22,6 @@ web:
     - DB_PASSWORD=
   links:
     - db
+    
+volumes:
+    db_data:
