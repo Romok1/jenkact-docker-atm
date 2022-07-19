@@ -35,6 +35,10 @@ RUN bundle exec rails db:migrate RAILS_ENV=test
 
 COPY --chown=docker:docker . /jenkact
 
+USER root
+RUN chown -R docker:docker /jenkact/Gemfile.lock
+RUN chmod +w /jenkact/Gemfile.lock
+
 WORKDIR /jenkact
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
