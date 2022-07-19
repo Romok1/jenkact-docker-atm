@@ -13,8 +13,6 @@ RUN apt-get update && apt-get install -y \
 RUN	groupadd -r -g 1000 jenkins && \
 		useradd -r --create-home -u 1000 -g jenkins jenkins
 
-USER jenkins
-
 COPY Gemfile /jenkact/Gemfile
 COPY Gemfile.lock /jenkact/Gemfile.lock
 
@@ -28,6 +26,8 @@ RUN chmod +x /usr/bin/entrypoint.sh
 ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
 
+WORKDIR /jenkact
+
 USER jenkins
 
 RUN gem install bundler && \
@@ -36,6 +36,5 @@ RUN gem install bundler && \
 
 COPY --chown=jenkins:jenkins . /jenkact
 
-WORKDIR /jenkact
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
