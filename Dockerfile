@@ -36,5 +36,8 @@ RUN gem install bundler && \
 
 COPY --chown=jenkins:jenkins . /jenkact
 
+USER root
+RUN chown -R jenkins:jenkins /jenkact/Gemfile.lock
+RUN chmod +w /jenkact/Gemfile.lock
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
