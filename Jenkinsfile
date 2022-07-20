@@ -84,6 +84,9 @@ pipeline {
   }
 
   post {
+    cleanup {
+      sh 'docker-compose down --remove-orphans --rmi all'
+    }
     always {
       cleanWs(cleanWhenNotBuilt: false,
                     deleteDirs: true,
@@ -92,8 +95,5 @@ pipeline {
                     patterns: [[pattern: '**/*',  type: 'INCLUDE'], [pattern: '~/workspace/scmfolder', type: 'INCLUDE'],
  		    [pattern: '.propsfile', type: 'EXCLUDE']]) 
       }
-    cleanup {
-      sh 'docker-compose down --remove-orphans --rmi all'
-    }
   }
 }
