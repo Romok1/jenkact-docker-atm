@@ -3,7 +3,10 @@ services:
   db:
     image: 'postgres:13.7'
     environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: db
     ports:
       - "5432"
     volumes:
@@ -16,6 +19,11 @@ services:
      - .:/jenkact-docker-atm
     ports:
       - "3000:3000"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      POSTGRES_HOST: db
     depends_on:
       - db
 
