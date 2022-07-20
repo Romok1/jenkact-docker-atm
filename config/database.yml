@@ -5,16 +5,19 @@
 #   gem 'sqlite3'
 #
 default: &default
-  adapter: postgresql 
-  pool: 5
-  timeout: 5000
-  host: <%= ENV['POSTGRES_HOST'] %>
-  username: <%= ENV['POSTGRES_USER'] %>
-  password: <%= ENV['POSTGRES_PASSWORD'] %>
-
+  adapter: postgresql
+  encoding: unicode
+  host: db # change this line
+  port: 5432 # change this line too, use internal port
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
+  password:
 development:
   <<: *default
-  database: <%= ENV['POSTGRES_DBNAME'] %>
+  database: jenkact_development
+ 
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
