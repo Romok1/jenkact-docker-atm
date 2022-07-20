@@ -1,85 +1,76 @@
-#!groovy
-
-def message = "";
-def author = "";
-
-def getLastCommitMessage = {
-    message = sh(returnStdout: true, script: 'git log -1 --pretty=%B').trim()
-}
-
-def getGitAuthor = {
-    def commit = sh(returnStdout: true, script: 'git rev-parse HEAD')
-    author = sh(returnStdout: true, script: "git --no-pager show -s --format='%an' ${commit}").trim()
-}
+#! /usr/bin/env groovy
 
 pipeline {
-    agent any
-    options {
-        timeout(time: 1, unit: 'DAYS')
-        disableConcurrentBuilds()
+  agent any
+
+  environment {
+    COMPOSE_PROJECT_NAME = "${env.JOB_NAME}-${env.BUILD_ID}".replaceAll("/", "-").replaceAll(" ", "").toLowerCase()
+    COMPOSE_FILE = "docker-compose.yml:docker-compose.test.yml"
+    RAILS_ENV = "test"
+    DOCKER_REF = "${(env.GERRIT_EVENT_TYPE == 'change-merged') ? env.GERRIT_BRANCH : env.GERRIT_REFSPEC}"
+    DOCKER_TAG = env.DOCKER_REF.replace("refs/changes/", "").replaceAll("/", ".")
+  }
+
+  stages {
+    stage('Build') {
+      steps {
+        sh 'docker-compose build --pull'
+        sh 'docker-compose up -d db'
+      }
     }
-    stages {
-        stage("Init RoR and DB") {
-          agent any
-          steps { initialize() }
-        }
-        stage("Tests") {
-          agent any
-          steps { test() }
-          post {
-            success {
-              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/jenkins_home/workspace/VPX-open-source/coverage/', reportFiles: 'index.html', reportName: 'RspecCoverage', reportTitles: ''])
-              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/jenkins_home/workspace/VPX-open-source/coverage/lcov-report', reportFiles: 'index.html', reportName: 'JestCoverage', reportTitles: ''])
-              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/jenkins_home/workspace/VPX-open-source/reports/', reportFiles: 'eslint.html', reportName: 'Eslint', reportTitles: ''])
-              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/jenkins_home/workspace/VPX-open-source/reports/', reportFiles: 'rubocop.html', reportName: 'Rubocop', reportTitles: ''])
-              publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/jenkins_home/workspace/VPX-open-source/reports/rubycritic/', reportFiles: 'overview.html', reportName: 'Rubycritic', reportTitles: ''])
+    stage('Prepare') {
+      steps {
+        sh 'docker-compose run --rm -T web bundle exec rake db:setup'
+      }
+    }
+    stage('Test') {
+      parallel {
+        stage('Database Dependent Suites') {
+          stages {
+            stage('RSpec') {
+              steps {
+                sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-rspec web bundle exec rake spec'
+              }
+            }
+            stage('Cucumber') {
+              steps {
+                sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-cucumber web bash bin/cucumber'
+              }
             }
           }
         }
-    }
-    post {
-      failure {
-        script {
-          getLastCommitMessage()
-          getGitAuthor()
+        stage('Jasmine') {
+          steps {
+            sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-jasmine web bundle exec rake spec:javascript'
+          }
         }
-        rocketSend channel: 'myproject-ci', emoji: ':x:', message: "Build failed - Commit : '${message}' by ${author}", rawMessage: true
+        stage('Brakeman') {
+          steps {
+            sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-brakeman web bundle exec brakeman'
+          }
+        }
+        stage('Synk') {
+          when { environment name: "GERRIT_EVENT_TYPE", value: "change-merged"}
+          steps {
+            withCredentials([string(credentialsId: 'SNYK_TOKEN', variable: 'SNYK_TOKEN')]) {
+              sh 'docker pull snyk/snyk-cli:rubygems'
+              sh 'docker run --rm -v "$(pwd):/project" -e SNYK_TOKEN snyk/snyk-cli:rubygems monitor --project-name=rollcall-attendance:ruby'
+            }
+          }
+        }
+        stage('Docker Image') {
+          steps {
+            sh 'docker build -t $DOCKER_REGISTRY_FQDN/jenkins/rollcall:$DOCKER_TAG .'
+            sh 'docker push $DOCKER_REGISTRY_FQDN/jenkins/rollcall:$DOCKER_TAG'
+          }
+        }
       }
-   }
-}
-
-def initialize() {
-    sh 'docker-compose -f docker-compose.yml up --build --detach'
-}
-
-def test() {
-  try {
-
-    retry(3){
-        sleep 25
-        HEALTH = sh (
-          script: 'docker inspect -f \'{{json .State.Health.Status}}\' vpx-web-test',
-          returnStdout: true
-        ).trim()
-        echo "${HEALTH}"
-
-        if(HEALTH == "starting"){
-          return true
-        }
     }
-
-    sh 'docker exec vpx-web-test sh -c "cd app/ && RAILS_ENV=test bundle exec rspec -f documentation"'
-    sh 'docker exec vpx-web-test sh -c "cd app/ && yarn test"'
-
-    sh 'docker exec vpx-web-test sh -c "cd app/ && yarn test --coverage > reports/jest-coverage.html"'
-    sh 'docker exec vpx-web-test sh -c "cd app/ && yarn lint --f html reports/eslint.html ; exit 0"'
-    sh 'docker exec vpx-web-test sh -c "cd app/ && rubycritic app/ --no-browser -p reports/rubycritic"'
-    sh 'docker exec vpx-web-test sh -c "cd app/ && rubocop app/ --format html -o reports/rubocop.html --fail-level error"'
   }
-  catch (exc) {
-    error("Build failed")
-  }
-  finally{
-    sh 'docker-compose -f docker-compose.yml down'
+
+  post {
+    cleanup {
+      sh 'docker-compose down --remove-orphans --rmi all'
+    }
   }
 }
