@@ -84,6 +84,14 @@ pipeline {
   }
 
   post {
+    always {
+      cleanWs(cleanWhenNotBuilt: false,
+                    deleteDirs: true,
+                    disableDeferredWipeout: true,
+                    notFailBuild: true,
+                    patterns: [[pattern: '**/*',  type: 'INCLUDE'], [pattern: '~/workspace/scmfolder', type: 'INCLUDE'],
+ 		    [pattern: '.propsfile', type: 'EXCLUDE']]) 
+      }
     cleanup {
       sh 'docker-compose down --remove-orphans --rmi all'
     }
