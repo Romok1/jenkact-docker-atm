@@ -1,51 +1,17 @@
-FROM ruby:3.1.0-bullseye
+FROM ruby:3.1.0
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs postgresql-client
 
-# New
+RUN mkdir /jenkact-docker-atm
+WORKDIR /tmp
+COPY Gemfile Gemfile
+COPY Gemfile.lock Gemfile.lock
+RUN bundle install -j 4
 
-# Postgres related
-RUN apt-get update && apt-get install -qq -y --no-install-recommends build-essential postgresql postgresql-contrib libpq-dev libsqlite3-dev curl imagemagick nodejs yarn postgresql-client
-
-RUN apt-get update -q && \
-    apt-get install -qy procps curl ca-certificates gnupg2 build-essential --no-install-recommends && apt-get clean
-    
-# RVM version to install
-ARG RVM_VERSION=3.1.0
-ARG BUNDLER_VERSION=2.3.16
-
-ENV RVM_VERSION=${RVM_VERSION}
-ENV BUNDLER_VERSION=${BUNDLER_VERSION}
-
-RUN gem install bundler -v ${BUNDLER_VERSION}
-RUN curl -sSL https://get.rvm.io | bash -s
-
-ENV PATH /usr/local/rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-SHELL [ "/bin/bash", "-l", "-c" ]
-RUN rvm requirements
-RUN rvm install ${RVM_VERSION} \
-  && rvm use ${RVM_VERSION} --default
-CMD source /etc/profile.d/rvm.sh
-CMD source ~/.rvm/scripts/rvm
-
-ENV PATH $PATH:/usr/local/rvm/bin
-
-ENV GEM_HOME="/usr/local/bundle"
-ENV PATH $GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH
-
-# Existing
-ENV PROJECTDIR /jenkact
-
-WORKDIR $PROJECTDIR
-
-COPY Gemfile ./
-COPY Gemfile.lock ./
-
-RUN gem install rails bundler
-RUN gem install rake
-RUN bundle install
-
-COPY . .
-
+# Add a script to be executed every time the container starts.
+COPY entrypoint.sh /usr/bin/
+RUN chmod +x /usr/bin/entrypoint.sh
+ENTRYPOINT ["entrypoint.sh"]
 EXPOSE 3000
-
-CMD ["/bin/bash", "-c, -l", "bundle", "exec", "rails" ]
+ 
+ADD . /jenkact-docker-atm
+WORKDIR /jenkact-docker-atm
