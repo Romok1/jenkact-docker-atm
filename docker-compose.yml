@@ -14,10 +14,6 @@ services:
       - .:/jenkact
     ports:
       - "3000:3000"
-    environment:
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=
-      - DB_HOST=db
     depends_on:
       - db
 
