@@ -2,6 +2,6 @@
 
 set -e
 
-rm -f /jenkact/tmp/pids/server.pid
+rm -f /jenkact-docker-atm/tmp/pids/server.pid
 
 exec "$@"
