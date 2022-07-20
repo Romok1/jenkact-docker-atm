@@ -12,10 +12,9 @@ pipeline {
   }
 
   stages {
-    stage('Clean') {
+    stage('Start') {
       steps {
-        cleanWs()
-        sh 'echo clean workspace'
+        sh 'echo "send start message to slack"'
       }
     }
     stage('Build') {
