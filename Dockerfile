@@ -2,7 +2,7 @@ FROM ruby:3.1.0
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs postgresql-client
 
 RUN mkdir /jenkact-docker-atm
-WORKDIR /tmp
+WORKDIR /jenkact-docker-atm
 COPY Gemfile Gemfile
 COPY Gemfile.lock Gemfile.lock
 RUN bundle install -j 4
