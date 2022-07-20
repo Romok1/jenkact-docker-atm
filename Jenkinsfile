@@ -18,9 +18,24 @@ pipeline {
         sh 'docker-compose up -d db'
       }
     }
+    stage('dependencies') {
+      steps {
+        sh 'docker-compose run web bundle install'
+      }
+    }
     stage('Prepare') {
       steps {
         sh 'docker-compose run --rm -T web bundle exec rake db:setup'
+      }
+    }
+    stage('DB') {
+      steps {
+        sh 'docker-compose run --rm -T web bundle exec rake db:drop db:create db:migrate'
+      }
+    }
+    stage('Rspec') {
+      steps {
+        sh 'docker-compose run --rm -T --name=$COMPOSE_PROJECT_NAME-rspec web bundle exec rake spec'
       }
     }
     stage('Test') {
