@@ -7,8 +7,6 @@ services:
       POSTGRES_PASSWORD:
     ports:
       - "5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data
  
   web:
     build: .
@@ -24,5 +22,3 @@ services:
     image: redis
     ports:
       - "6379"
-volumes:
-  db_data:
