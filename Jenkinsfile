@@ -12,6 +12,12 @@ pipeline {
   }
 
   stages {
+    stage('Clean') {
+      steps {
+        cleanWs()
+        sh 'echo clean workspace'
+      }
+    }
     stage('Build') {
       steps {
         sh 'docker-compose build --pull'
@@ -86,14 +92,8 @@ pipeline {
   post {
     cleanup {
       sh 'docker-compose down --remove-orphans --rmi all'
-    }
-    always {
-      cleanWs(cleanWhenNotBuilt: false,
-                    deleteDirs: true,
-                    disableDeferredWipeout: true,
-                    notFailBuild: true,
-                    patterns: [[pattern: '**/*',  type: 'INCLUDE'], [pattern: '~/workspace/scmfolder', type: 'INCLUDE'],
- 		    [pattern: '.propsfile', type: 'EXCLUDE']]) 
+      
+      deleteDir()
       }
   }
 }
