@@ -9,7 +9,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
  
-  vpx-web-test:
+  web:
     build: .
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
     volumes:
